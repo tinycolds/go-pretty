@@ -2,6 +2,7 @@ package table
 
 import (
 	"fmt"
+	"github.com/rivo/uniseg"
 	"strings"
 	"unicode/utf8"
 
@@ -94,6 +95,9 @@ func (t *Table) renderColumn(out *strings.Builder, row rowStr, colIdx int, maxCo
 		}
 	}
 	colStr = align.Apply(colStr, maxColumnLength)
+	if uniseg.GraphemeClusterCount(colStr) < maxColumnLength {
+		colStr += strings.Repeat(" ", maxColumnLength-uniseg.GraphemeClusterCount(colStr))
+	}
 
 	// pad both sides of the column
 	if !hint.isSeparatorRow || (hint.isSeparatorRow && mergeVertically) {
